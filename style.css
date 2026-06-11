@@ -38,8 +38,8 @@ h1 {
 .score-box {
     display: grid;
     grid-template-columns: auto auto;
-    column-gap: 10px;
-    gap: 5px;
+    column-gap: 22px;
+    row-gap: 8px;
     align-items: center;
     text-align: left;
     flex: 0 0 auto;
@@ -57,16 +57,49 @@ h1 {
     background-color: #f8f8f8;
 }
 
+.score-box {
+    font-size: 1em;
+}
+
 #movesDisplay, #bestScoreDisplay, #bestTimeDisplay, #timeDisplay {
-    font-size: 1.1em;
     font-weight: bold;
     color: #413938;
     white-space: nowrap; /* 折り返しを防ぐ */
 }
 
+#movesDisplay,
+#timeDisplay,
 #bestScoreDisplay,
 #bestTimeDisplay {
-    text-align: right;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1.2;
+}
+
+#movesDisplay {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#timeDisplay {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#bestScoreDisplay {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#bestTimeDisplay {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+#bestScoreDisplay .material-symbols-outlined,
+#bestTimeDisplay .material-symbols-outlined {
+    color: #ffc400;
 }
 
 #message {
@@ -298,4 +331,19 @@ h1 {
     font-size: 0.9em;
     font-weight: 700;
     text-decoration: none;
+}
+
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1.2em;
+  line-height: 1;
+  vertical-align: middle;
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
 }

@@ -1,10 +1,14 @@
 // --- 1. 定数とDOM要素の定義 ---
 const puzzleBoard = document.getElementById('puzzleBoard');
 const movesDisplay = document.getElementById('movesDisplay');
+const movesCount = document.getElementById('movesCount');
 const timeDisplay = document.getElementById('timeDisplay');
+const timeCount = document.getElementById('timeCount');
 const messageDisplay = document.getElementById('message');
 const bestScoreDisplay = document.getElementById('bestScoreDisplay');
+const bestScoreCount = document.getElementById('bestScoreCount');
 const bestTimeDisplay = document.getElementById('bestTimeDisplay');
+const bestTimeCount = document.getElementById('bestTimeCount');
 const newGameButton = document.getElementById('newGameButton');
 const retryButton = document.getElementById('retryButton');
 const numberToggleButton = document.getElementById('numberToggleButton');
@@ -20,7 +24,7 @@ let boardState = [];
 let initialBoardState = [];
 let moves = 0;
 let isGameActive = false;
-let currentBoardSize = 3;
+let currentBoardSize = 4;
 let isNumberHidden = true;
 let swipeStart = null;
 let suppressNextClick = false;
@@ -46,7 +50,7 @@ function loadHighScore() {
 function loadBestTime() {
     const savedTime = localStorage.getItem(getBestTimeKey());
     const time = savedTime ? parseInt(savedTime, 10) : Infinity;
-    return time > 0 ? time : Infinity;
+    return time >= 0 ? time : Infinity;
 }
 
 function getTileCount() {
@@ -82,7 +86,14 @@ function formatTime(totalSeconds) {
 }
 
 function updateTimeDisplay(totalSeconds = 0) {
-    timeDisplay.textContent = `タイム: ${formatTime(totalSeconds)}`;
+    const formattedTime = formatTime(totalSeconds);
+    timeCount.textContent = formattedTime;
+    timeDisplay.setAttribute('aria-label', `タイム: ${formattedTime}`);
+}
+
+function updateMovesDisplay() {
+    movesCount.textContent = moves;
+    movesDisplay.setAttribute('aria-label', `手数: ${moves}`);
 }
 
 function startTimer() {
@@ -178,12 +189,16 @@ function generateSolvableState() {
 
 function updateHighScoreDisplay() {
     const currentHighScore = loadHighScore();
-    bestScoreDisplay.textContent = `ベスト: ${currentHighScore === Infinity ? '-' : currentHighScore}`;
+    const scoreText = currentHighScore === Infinity ? '-' : currentHighScore;
+    bestScoreCount.textContent = scoreText;
+    bestScoreDisplay.setAttribute('aria-label', `ベスト: ${scoreText}`);
 }
 
 function updateBestTimeDisplay() {
     const currentBestTime = loadBestTime();
-    bestTimeDisplay.textContent = `ベスト: ${currentBestTime === Infinity ? '-' : formatTime(currentBestTime)}`;
+    const timeText = currentBestTime === Infinity ? '-' : formatTime(currentBestTime);
+    bestTimeCount.textContent = timeText;
+    bestTimeDisplay.setAttribute('aria-label', `ベストタイム: ${timeText}`);
 }
 
 function updateModeButtons() {
@@ -323,7 +338,7 @@ function tryMoveTile(tileIndex) {
 
         startTimer();
         moves++;
-        movesDisplay.textContent = `手数: ${moves}`;
+        updateMovesDisplay();
         
         updateTilePositions();
         animateMovedTile(movedTile, startRect);
@@ -457,7 +472,7 @@ function checkForWin(completionDelay = 0) {
     if (isWin) {
         isGameActive = false;
         stopTimer();
-        messageDisplay.textContent = `クリア！${moves}手で達成！`;
+        messageDisplay.textContent = `クリア！`;
         
         // ハイスコア更新
         const currentHighScore = loadHighScore();
@@ -477,7 +492,7 @@ function checkForWin(completionDelay = 0) {
         }
 
         if (isNewRecord) {
-            messageDisplay.textContent = `新記録！${moves}手で達成！`;
+            messageDisplay.textContent = `新記録！`;
         }
 
         window.clearTimeout(completionTimer);
@@ -491,7 +506,7 @@ function checkForWin(completionDelay = 0) {
 
 function resetStats() {
     moves = 0;
-    movesDisplay.textContent = `手数: ${moves}`;
+    updateMovesDisplay();
     resetElapsedTime();
     hideShareLink();
     messageDisplay.textContent = 'スタート！';
@@ -542,6 +557,7 @@ window.onload = () => {
     resetOldScoresOnce();
     updateHighScoreDisplay(); // 初期表示
     updateBestTimeDisplay();
+    updateMovesDisplay();
     updateTimeDisplay();
     updateModeButtons();
     updateNumberMode();
