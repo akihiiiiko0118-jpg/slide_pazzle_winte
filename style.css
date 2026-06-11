@@ -252,7 +252,7 @@ h1 {
     grid-template-columns: repeat(3, 1fr);
     margin-top: 14px;
     margin-bottom: 16px;
-    border: 2px solid #ff9aa6;
+    border: 2px solid #ea6474;
     border-radius: 18px;
     overflow: hidden;
 }
@@ -260,10 +260,10 @@ h1 {
 .mode-button {
     padding: 8px 10px;
     border: none;
-    border-right: 2px solid #ff9aa6;
+    border-right: 2px solid #ea6474;
     border-radius: 0;
     background-color: #fff;
-    color: #ff9aa6;
+    color: #ea6474;
     font-family: inherit;
     font-size: 0.95em;
     font-weight: 700;
@@ -277,7 +277,7 @@ h1 {
 }
 
 .mode-button.active {
-    background-color: #ff9aa6;
+    background-color: #ea6474;
     color: #fff;
 }
 
@@ -303,7 +303,7 @@ h1 {
     font-size: 1.1em;
     font-weight: 700;
     cursor: pointer;
-    background-color: #ff9aa6;
+    background-color: #ea6474;
     color: white;
     border: none;
     border-radius: 25px;
@@ -316,9 +316,9 @@ h1 {
 }
 
 #retryButton {
-    border: 2px solid #ff9aa6;
+    border: 2px solid #ea6474;
     background-color: #fff;
-    color: #ff9aa6;
+    color: #ea6474;
 }
 
 .share-box {
@@ -398,7 +398,7 @@ h1 {
 }
 
 .toggle-button-2:has(:checked) {
-    border-color: #ff9aa6;
+    border-color: #ea6474;
 }
 
 .toggle-button-2::after {
@@ -416,7 +416,7 @@ h1 {
 
 .toggle-button-2:has(:checked)::after {
     left: 31px;
-    background-color: #ff9aa6;
+    background-color: #ea6474;
 }
 
 .toggle-button-2 input {
