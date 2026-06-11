@@ -119,9 +119,10 @@ function hideShareLink() {
 
 function showShareLink() {
     const resultText =
-        `ウミウサ明ちゃんパズル ${currentBoardSize}x${currentBoardSize} をクリア！\n` +
+        `ウミウサ明ちゃんパズル(${currentBoardSize}x${currentBoardSize}) をクリア！\n` +
         `手数: ${moves}\n` +
-        `タイム: ${formatTime(elapsedSeconds)}`;
+        `タイム: ${formatTime(elapsedSeconds)}\n` +
+        `#きょうあい #強制改宗大恋愛`;
     const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(resultText)}`;
 
     shareLink.href = shareUrl;
