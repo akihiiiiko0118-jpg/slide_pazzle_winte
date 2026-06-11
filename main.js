@@ -11,7 +11,7 @@ const bestTimeDisplay = document.getElementById('bestTimeDisplay');
 const bestTimeCount = document.getElementById('bestTimeCount');
 const newGameButton = document.getElementById('newGameButton');
 const retryButton = document.getElementById('retryButton');
-const numberToggleButton = document.getElementById('numberToggleButton');
+const numberToggleInput = document.getElementById('numberToggleInput');
 const shareBox = document.getElementById('shareBox');
 const shareLink = document.getElementById('shareLink');
 const modeButtons = document.querySelectorAll('.mode-button');
@@ -211,8 +211,7 @@ function updateModeButtons() {
 
 function updateNumberMode() {
     puzzleBoard.classList.toggle('hide-numbers', isNumberHidden);
-    numberToggleButton.textContent = isNumberHidden ? '数字ON' : '数字OFF';
-    numberToggleButton.setAttribute('aria-pressed', String(isNumberHidden));
+    numberToggleInput.checked = !isNumberHidden;
 }
 
 function createBoard() {
@@ -547,7 +546,7 @@ function changeBoardSize(size) {
 }
 
 function toggleNumbers() {
-    isNumberHidden = !isNumberHidden;
+    isNumberHidden = !numberToggleInput.checked;
     updateNumberMode();
 }
 
@@ -564,7 +563,7 @@ window.onload = () => {
     createBoard();
     newGameButton.addEventListener('click', startNewGame);
     retryButton.addEventListener('click', retryGame);
-    numberToggleButton.addEventListener('click', toggleNumbers);
+    numberToggleInput.addEventListener('change', toggleNumbers);
     puzzleBoard.addEventListener('touchstart', handleTouchStart, {passive: true});
     puzzleBoard.addEventListener('touchend', handleTouchEnd, {passive: false});
     puzzleBoard.addEventListener('touchcancel', handleTouchCancel);

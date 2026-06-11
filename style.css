@@ -250,17 +250,20 @@ h1 {
 .mode-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
     margin-top: 14px;
     margin-bottom: 16px;
+    border: 2px solid #ff9aa6;
+    border-radius: 18px;
+    overflow: hidden;
 }
 
 .mode-button {
     padding: 8px 10px;
-    border: 1px solid #CE3E43;
-    border-radius: 18px;
+    border: none;
+    border-right: 2px solid #ff9aa6;
+    border-radius: 0;
     background-color: #fff;
-    color: #CE3E43;
+    color: #ff9aa6;
     font-family: inherit;
     font-size: 0.95em;
     font-weight: 700;
@@ -269,8 +272,12 @@ h1 {
     appearance: none;
 }
 
+.mode-button:last-child {
+    border-right: none;
+}
+
 .mode-button.active {
-    background-color: #CE3E43;
+    background-color: #ff9aa6;
     color: #fff;
 }
 
@@ -290,13 +297,13 @@ h1 {
 
 /* --- 5. ボタン --- */
 #newGameButton,
-#retryButton,
-#numberToggleButton {
+#retryButton {
     padding: 10px 20px;
     font-family: inherit;
     font-size: 1.1em;
+    font-weight: 700;
     cursor: pointer;
-    background-color: #CE3E43;
+    background-color: #ff9aa6;
     color: white;
     border: none;
     border-radius: 25px;
@@ -304,9 +311,14 @@ h1 {
     appearance: none;
 }
 
-#retryButton,
-#numberToggleButton {
-    background-color: #555;
+#retryButton {
+    background-color: #777;
+}
+
+#retryButton {
+    border: 2px solid #ff9aa6;
+    background-color: #fff;
+    color: #ff9aa6;
 }
 
 .share-box {
@@ -346,4 +358,67 @@ h1 {
   'wght' 400,
   'GRAD' 0,
   'opsz' 24
+}
+
+
+.setting-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* トグルボタン */
+/* https://pote-chil.com/css-stock/ja/toggle-button#2 */
+
+.toggle-label {
+    color: #7b605c;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.toggle-button-2 {
+    display: inline-block;
+    position: relative;
+    width: 58px;
+    height: 30px;
+    border-radius: 30px;
+    border: 2px solid #dddddd;
+    box-sizing: content-box;
+    cursor: pointer;
+    transition: border-color .4s;
+}
+
+.toggle-button-2:has(:checked) {
+    border-color: #ff9aa6;
+}
+
+.toggle-button-2::after {
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #dddddd;
+    content: '';
+    transition: left .4s;
+}
+
+.toggle-button-2:has(:checked)::after {
+    left: 31px;
+    background-color: #ff9aa6;
+}
+
+.toggle-button-2 input {
+    display: none;
 }
