@@ -1,0 +1,301 @@
+
+/* --- 1. 全体デザイン & リセット --- */
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: "Zen Maru Gothic", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    margin: 0;
+    background-color: #FFE9EB;
+    padding: 10px; /* スマホで上下に余裕を持たせる */
+}
+
+.container {
+    width: 95%;
+    max-width: 450px; /* スマホの縦幅を意識した最大幅 */
+    padding: 20px 15px; 
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    color: #413938;
+    font-size: clamp(1.5em, 5vw, 1.8em); /* フォントもレスポンシブに */
+    margin-bottom: 15px;
+}
+
+/* --- 2. 情報表示エリア --- */
+.score-box {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 10px;
+    gap: 5px;
+    align-items: center;
+    text-align: left;
+    flex: 0 0 auto;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+}
+
+#movesDisplay, #bestScoreDisplay, #bestTimeDisplay, #timeDisplay {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #413938;
+    white-space: nowrap; /* 折り返しを防ぐ */
+}
+
+#bestScoreDisplay,
+#bestTimeDisplay {
+    text-align: right;
+}
+
+#message {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+}
+
+.message-area {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+}
+
+/* --- 3. パズルボード --- */
+#puzzleBoard {
+    display: grid;
+    grid-template-columns: repeat(var(--board-size, 3), 1fr);
+    grid-template-rows: repeat(var(--board-size, 3), 1fr);
+    gap: 5px;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 5px;
+    touch-action: none; /* 盤面上ではスワイプ操作をパズル移動として扱う */
+    position: relative;
+    overflow: hidden;
+}
+
+#puzzleBoard::before {
+    /* 完成時に表示する1枚絵。通常時は透明にして盤面の下に置いておく */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("./images/ooariwebonly.png");
+    background-size: cover;
+    background-position: center;
+    border-radius: inherit;
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+        opacity 0.45s ease,
+        transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+    z-index: 0;
+}
+
+#puzzleBoard.completed::before {
+    /* 白い盤面から完成イラストがゆっくり浮き上がる */
+    opacity: 1;
+    transform: scale(1);
+    transition-duration: 1.5s;
+    transition-delay: 0.2s;
+}
+
+#puzzleBoard.resetting::before {
+    /* リセット時は完成イラストも素早く白へ戻す */
+    opacity: 0;
+    transform: scale(0.98);
+    transition-duration: 0.18s;
+    transition-delay: 0s;
+}
+
+/* --- 4. パズルタイル --- */
+.tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("./images/ooariwebonly.png");
+    background-size: var(--image-size) var(--image-size);
+    background-position: var(--bg-x) var(--bg-y);
+    font-family: "Changa One", sans-serif;
+    color: white;
+    font-size: clamp(2.25em, 9vw, 3em); /* タイル内のフォントもレスポンシブに */
+    font-weight: bold;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75);
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow:
+        /* プレイ中は画像に薄いグレーを重ねる */
+        inset 0 0 0 9999px rgba(210, 210, 210, 0.55),
+        0 3px 6px rgba(0, 0, 0, 0.2);
+    transition:
+        transform 0.1s cubic-bezier(0.2, 0.8, 0.2, 1),
+        background-color 0.4s,
+        opacity 0.25s ease;
+    user-select: none; 
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.tile.empty {
+    background-color: #fff !important; 
+    background-image: none;
+    box-shadow: none;
+    cursor: default;
+    color: transparent; 
+    z-index: 0;
+}
+
+.tile.correct {
+    /* 正解位置に来たタイルは数字とグレーを消して、画像だけ見せる */
+    color: transparent;
+    text-shadow: none;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+#puzzleBoard.hide-numbers .tile {
+    color: transparent;
+    text-shadow: none;
+}
+
+.tile.pop {
+    animation: tile-pop 0.28s cubic-bezier(0.2, 0.9, 0.25, 1.25);
+}
+
+#puzzleBoard.completed .tile {
+    /* 完成時はタイルを消し、下の1枚絵だけを見せる */
+    opacity: 0;
+    transform: scale(0.98);
+    pointer-events: none;
+}
+
+#puzzleBoard.resetting .tile {
+    /* シャッフル時は短く白へフェードしてから盤面を作り直す */
+    opacity: 0;
+    transition-duration: 0.18s;
+    pointer-events: none;
+}
+
+@keyframes tile-pop {
+    0% {
+        transform: scale(1);
+    }
+
+    55% {
+        transform: scale(1.08);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.mode-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 14px;
+    margin-bottom: 16px;
+}
+
+.mode-button {
+    padding: 8px 10px;
+    border: 1px solid #CE3E43;
+    border-radius: 18px;
+    background-color: #fff;
+    color: #CE3E43;
+    font-family: inherit;
+    font-size: 0.95em;
+    font-weight: 700;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.mode-button.active {
+    background-color: #CE3E43;
+    color: #fff;
+}
+
+.button-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* --- 5. ボタン --- */
+#newGameButton,
+#retryButton,
+#numberToggleButton {
+    padding: 10px 20px;
+    font-family: inherit;
+    font-size: 1.1em;
+    cursor: pointer;
+    background-color: #CE3E43;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+#retryButton,
+#numberToggleButton {
+    background-color: #555;
+}
+
+.share-box {
+    position: absolute;
+    left: 0;
+    top: calc(100% + 6px);
+    z-index: 5;
+}
+
+.share-box.hidden {
+    display: none;
+}
+
+#shareLink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 12px;
+    border-radius: 25px;
+    background-color: #111;
+    color: #fff;
+    font-size: 0.9em;
+    font-weight: 700;
+    text-decoration: none;
+}
